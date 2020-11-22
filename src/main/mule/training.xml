@@ -151,6 +151,6 @@ output application/json
         <flow-ref doc:name="send rest request" doc:id="4c53dea4-95be-4543-8551-80d72641c244" name="RestRequest" />
     </flow>
     <flow name="get:\requests\soap:training-config">
-        <logger level="INFO" message="get:\requests\soap:training-config" />
+		<flow-ref doc:name="send soap request" doc:id="8905b23f-c936-4ec0-9b69-aa73aabd45a0" name="SOAPRequest"/>
     </flow>
 </mule>
