@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:american-flights-api="http://www.mulesoft.org/schema/mule/american-flights-api"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/american-flights-api http://www.mulesoft.org/schema/mule/american-flights-api/current/mule-american-flights-api.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+	<sub-flow name="GETAmericanFlightsFromComponent" doc:id="e571f9bc-093c-46f9-b3f9-7386472a0b11" >
+		<american-flights-api:get-flights doc:name="Get flights" doc:id="4f90d1f1-de78-4de4-864b-81c948b2d6ac" config-ref="American_Flights_API_Config" client-id="${american.client_id}" client-secret="${american.client_secret}" destination="LAX" />
+	</sub-flow>
+	<sub-flow name="CreateAmericanFlightFromComponent" doc:id="20a9b42d-4138-4fea-9450-068083a8dd68" >
+		<american-flights-api:create-flight doc:name="Create flight" doc:id="a687a06c-91f8-4379-b28d-9f4cbd4176cd" config-ref="American_Flights_API_Config" client-id="${american.client_id}" client-secret="${american.client_secret}"/>
+	</sub-flow>
+	<sub-flow name="RestRequest" doc:id="f363f41d-10ce-4fee-b2e7-f537daff1da6" >
+		<set-variable value="#[attributes.uriParams.category]" doc:name="Set category" doc:id="e08c7e3c-a7f4-4d63-8db5-fd09c39c447f" variableName="category"/>
+		<http:request method="GET" doc:name="Request united/flights/{category}" doc:id="b370a16b-f9f6-40bb-a8ed-2a92642ca90b" config-ref="HTTP_REST_Request" url="http://mu.learn.mulesoft.com/united/flights/{category}">
+			<http:uri-params ><![CDATA[#[{
+	category: vars.category
+}]]]></http:uri-params>
+		</http:request>
+	</sub-flow>
+	<sub-flow name="SOAPRequest" doc:id="6c4bba0c-d9fe-4dc8-85ce-d39879bb6910" >
+		<wsc:consume operation="listAllFlights" doc:name="Consume" doc:id="5a7c4191-9a75-459d-a8c0-86be23470ec6" config-ref="Web_Service_Consumer_Config"/>
+	</sub-flow>
+</mule>

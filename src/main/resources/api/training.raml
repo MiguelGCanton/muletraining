@@ -1,0 +1,29 @@
+#%RAML 1.0
+title: Ksquare university training
+
+
+/requests:
+  /component:
+    get:
+    post:
+    
+  /rest:
+    /{category}:
+      uriParameters:
+        category: 
+          type: string
+          enum: [SFO,LAX,CLE,PDX,PDF]
+      get:
+  /soap:
+    get:
+        
+  
+/errors:
+
+  get:
+  post:
+  
+/flows:
+
+  get:
+  post:

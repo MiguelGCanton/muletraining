@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:american-flights-api="http://www.mulesoft.org/schema/mule/american-flights-api"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/american-flights-api http://www.mulesoft.org/schema/mule/american-flights-api/current/mule-american-flights-api.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+	<http:request-config name="HTTP_REST_Request" doc:name="HTTP Request configuration" doc:id="33f5496a-08a8-43a7-bbd4-993036d19aa8" />
+	<configuration-properties doc:name="Configuration properties" doc:id="f5e2caff-603d-4cd8-938c-e6273958f4f9" file="training.yaml" />
+	<american-flights-api:config name="American_Flights_API_Config" doc:name="American Flights API Config" doc:id="187b58a4-a9f0-4b7c-8d1d-dac059eabadf" property_host="${american.host}" property_port="${american.port}" property_protocol="${american.protocol}" property_basePath="${american.basepath}"/>
+	<http:request-config name="HTTP_SOAP_Request" doc:name="HTTP Request configuration" doc:id="8295f578-04bc-4aa3-93e9-56e8feb269e2" />
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="436e2d18-dc6d-4c8b-822c-6a66b9badde5" >
+		<wsc:connection wsdlLocation="${delta.wsdl}" service="${delta.service}" port="${delta.port}" >
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+		</wsc:connection>
+	</wsc:config>
+	<flow name="ConfigurationsFlow" doc:id="997744fe-a31e-4256-a724-c65514f93631" >
+		<wsc:consume operation="" doc:id="c3d181fe-87bc-4521-bfa6-0e55d336b9dd" />
+	</flow>
+	
+</mule>
