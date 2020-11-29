@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="412a1599-dc83-4e18-be51-674eefe46847" i18n="#[false]" />
+	<sub-flow name="generateError" doc:id="17df5776-3f05-44db-8a9f-52593da7d515" >
+		<wsc:consume doc:name="GenerateError" doc:id="ae945fdc-c1ad-4156-b868-2f22477811bd" config-ref="SOAP_ERROR" operation="listAllFlights"/>
+	</sub-flow>
+	<sub-flow name="CatchErrorHandlerContinue" doc:id="fa7c116d-76e5-4c5a-ba32-7e1371f3c80b">
+		<try doc:name="Try" doc:id="c266a76b-5908-4690-8d37-ed497dfa8129">
+			<flow-ref doc:name="generate error" doc:id="5fa19962-8ebb-444c-a080-3ea621a5aa2d" name="generateError"/>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2f68cbb4-8151-483f-9877-8471faf3ed19" >
+					<ee:transform doc:name="Transform Message" doc:id="d66f5e8e-e5a6-4226-bca9-4efc5daa2268" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	message: "on error continue"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+	</sub-flow>
+	<sub-flow name="CatchErrorHandlerPropagete" doc:id="9147faac-ed4b-492b-9672-91d621fafd59" >
+		<try doc:name="Try" doc:id="c4c411bb-d8cf-452c-862b-1220e4cf5ed9" >
+			<flow-ref doc:name="generate Error" doc:id="77b016b2-9aea-4e9f-8323-e89ac0008286" name="generateError"/>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="77050bdb-3f88-4dd6-9448-482af6e62583" >
+					<ee:transform doc:name="Transform Message" doc:id="a693071a-f208-495f-b2c4-96190ca5163f" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	message: " on error propagate"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+	</sub-flow>
+	<sub-flow name="ThrowErrorWithValidation" doc:id="33402d9d-6c55-40df-94c6-8d5d2853a83e" >
+		<try doc:name="Try" doc:id="0c83a5cc-7871-417a-b1c0-5bb2308517a1" >
+			<flow-ref doc:name="Generate error" doc:id="bfbf99c5-47ea-49a1-aa48-1e6db220c8f9" name="generateError"/>
+			<error-handler >
+				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="799ebad9-8794-42c2-b0b1-474123b77616" >
+					<ee:transform doc:name="Transform Message" doc:id="37b6ccb3-a260-443c-b13e-38560f807ac5" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+	message: "on error continue"
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+				</on-error-continue>
+			</error-handler>
+		</try>
+		<validation:is-true doc:name="throw error" doc:id="a4a67dc2-6de4-4794-a795-479b08b48219" config-ref="Validation_Config" message="validation component throw error"/>
+	</sub-flow>
+	<sub-flow name="CombinedErrors" doc:id="945def82-47fa-45bb-abfe-d90b632df8e1" >
+		<flow-ref doc:name="on error continue" doc:id="9d8a47c5-968d-429e-ac94-dc0de40f3870" name="CatchErrorHandlerContinue"/>
+	</sub-flow>
+</mule>

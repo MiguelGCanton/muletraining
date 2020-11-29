@@ -1,5 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<sub-flow name="choice" doc:id="aa888e88-142d-4d1c-af49-1deb29a72f04" >
+		<set-variable value="#[attributes.uriParams.path]" doc:name="Set path" doc:id="baee3fee-d799-4b54-9285-30db3d755997" variableName="category"/>
+		<choice doc:name="Choice" doc:id="895e7a0b-ef01-4a3b-9dbb-fd8d66b2d2cb" >
+			<when expression="#[vars.category == 'c']">
+				<flow-ref doc:name="american flights from component" doc:id="f18c2b5c-60c7-438e-aa90-e8735a54d7cf" name="GETAmericanFlightsFromComponent"/>
+			</when>
+			<when expression="#[vars.category == 's']">
+				<flow-ref doc:name="Soap request" doc:id="4eac250e-9a23-4c60-8f66-a743155a1d0a" name="SOAPRequest"/>
+			</when>
+			<otherwise>
+				<flow-ref doc:name="rest request" doc:id="a05acc20-13be-4ab7-b6b6-0b2c588a1887" name="RestRequest" />
+			</otherwise>
+		</choice>
+	</sub-flow>
+	<sub-flow name="scatterGather" doc:id="a2c2d905-cb28-44dc-adc6-e9d881c53f9d" >
+		<scatter-gather doc:name="Scatter-Gather" doc:id="5b72ea4a-027c-4037-badc-10d65cb9eaa2" >
+			<route >
+				<flow-ref doc:name="flights" doc:id="f2c88220-7c10-4064-bd0a-477580755df3" name="GETAmericanFlightsFromComponent" />
+			</route>
+			<route >
+				<flow-ref doc:name="soap request" doc:id="8b2631d4-89e9-4a5a-a7c8-bebc2ea6c7cd" name="SOAPRequest" />
+			</route>
+			<route >
+				<flow-ref doc:name="rest request" doc:id="98727acc-90b8-4e61-86d0-1ea7455a5f5a" name="RestRequest" />
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="add all payloads to final response" doc:id="dbb8337e-0c1a-4175-9833-a7ec71ccbba5" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payloads:{
+	payload1: payload[0].payload,
+	payload2: payload[1].payload,
+	payload3: payload[2].payload
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	<sub-flow name="roundrobin" doc:id="1d9b0a41-e12d-4320-80d9-25108de9b26c" >
+		<round-robin doc:name="Round Robin" doc:id="4ce96c14-7bc1-4667-8869-4937862fa6ad" >
+			<route >
+				<flow-ref doc:name="soap request" doc:id="3e11d93c-9323-488d-b50c-87060b7f0885" name="SOAPRequest" />
+			</route>
+			<route >
+				<flow-ref doc:name="rest request" doc:id="4209b849-ab3d-402d-bb3d-a98b9168ae1a" name="RestRequest" />
+			</route>
+			<route >
+				<flow-ref doc:name="flights" doc:id="a8f8f00c-d675-4626-a180-9f6c97a59c47" name="GETAmericanFlightsFromComponent" />
+			</route>
+		</round-robin>
+	</sub-flow>
+</mule>

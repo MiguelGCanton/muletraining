@@ -1,5 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"></mule>
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<error-handler name="GlobalErrorHandler" doc:id="fd18ed16-2a3e-4ad2-ad31-542d2ebc52a1" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="0f503d41-4c9d-4019-b93e-e7baec279ff0" type="ANY">
+			<set-variable value="#[455]" doc:name="Set httpStatus" doc:id="745bc44c-4953-4d6c-96e9-ad19fa2fee25" variableName="httpStatus"/>
+			<ee:transform doc:name="error message" doc:id="814206af-e740-4e70-8283-758f10ccfdde" >
+				<ee:message >
+					<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "D:"
+}]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="b968c4fc-7bd9-401d-8415-2789723c13ad" >
+			<set-variable value="#[300]" doc:name="Set httpStatus" doc:id="504a055c-2c23-4c79-bb42-cfee39ea3a28" variableName="httpStatus"/>
+		</on-error-propagate>
+	</error-handler>
+</mule>

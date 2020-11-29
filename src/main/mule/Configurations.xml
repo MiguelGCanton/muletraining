@@ -15,5 +15,11 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
 		</wsc:connection>
 	</wsc:config>
+	<wsc:config name="SOAP_ERROR" doc:name="Web Service Consumer Config" doc:id="6c5a1b97-b20f-46aa-85a8-d41a3ddd9fd1" >
+		<wsc:connection wsdlLocation="${errorRequest.wsdl}" service="${errorRequest.service}" port="${errorRequest.port}" >
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+		</wsc:connection>
+	</wsc:config>
+	<configuration doc:name="Configuration" doc:id="10b0aa8a-a87d-49d1-9257-46d84ca525bf" defaultErrorHandler-ref="GlobalErrorHandler" />
 	
 </mule>

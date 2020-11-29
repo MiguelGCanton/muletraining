@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd  http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
     <http:listener-config name="training-httpListenerConfig">
         <http:listener-connection host="0.0.0.0" port="8081" />
     </http:listener-config>
@@ -15,9 +15,17 @@
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="training-config" />
+        <ee:transform doc:name="to json" doc:id="d9dec455-05e5-406c-b4f6-a976de7d778f">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -30,7 +38,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -43,7 +51,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -56,7 +64,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -69,7 +77,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -82,7 +90,7 @@ output application/json
                 </ee:transform>
             </on-error-propagate>
             <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -109,7 +117,7 @@ output application/json
         <apikit:console config-ref="training-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
-                <ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+                <ee:transform xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
                     <ee:message>
                         <ee:set-payload><![CDATA[%dw 2.0
 output application/json
@@ -123,24 +131,6 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\errors:training-config">
-        <logger level="INFO" message="get:\errors:training-config" />
-    </flow>
-    <flow name="get:\flows:training-config">
-        <logger level="INFO" message="get:\flows:training-config" />
-    </flow>
-    <flow name="get:\requests:training-config">
-        <logger level="INFO" message="get:\requests:training-config" />
-    </flow>
-    <flow name="post:\errors:training-config">
-        <logger level="INFO" message="post:\errors:training-config" />
-    </flow>
-    <flow name="post:\flows:training-config">
-        <logger level="INFO" message="post:\flows:training-config" />
-    </flow>
-    <flow name="post:\requests:training-config">
-        <logger level="INFO" message="post:\requests:training-config" />
-    </flow>
     <flow name="get:\requests\component:training-config">
         <flow-ref doc:name="GET american flights by component" doc:id="bcefe276-460d-4743-a1a3-20d4df38f91b" name="GETAmericanFlightsFromComponent" />
     </flow>
@@ -151,6 +141,30 @@ output application/json
         <flow-ref doc:name="send rest request" doc:id="4c53dea4-95be-4543-8551-80d72641c244" name="RestRequest" />
     </flow>
     <flow name="get:\requests\soap:training-config">
-		<flow-ref doc:name="send soap request" doc:id="8905b23f-c936-4ec0-9b69-aa73aabd45a0" name="SOAPRequest"/>
+        <flow-ref doc:name="send soap request" doc:id="8905b23f-c936-4ec0-9b69-aa73aabd45a0" name="SOAPRequest" />
+    </flow>
+    <flow name="get:\flows\scattergather:training-config">
+        <flow-ref doc:name="scatterGather" doc:id="35383dac-827b-4a23-bff5-15c79801c5fd" name="scatterGather" />
+    </flow>
+    <flow name="get:\flows\choice\(path):training-config">
+        <flow-ref doc:name="Choice" doc:id="8811e7a2-ca50-444b-8064-328579cba789" name="choice" />
+    </flow>
+    <flow name="get:\flows\rouundrobind:training-config">
+        <flow-ref doc:name="round robin" doc:id="a6800256-df9c-45c1-9513-460a66d2b5aa" name="roundrobin" />
+    </flow>
+    <flow name="get:\errors\continue:training-config">
+        <flow-ref doc:name="continue" doc:id="7ef1a576-67ac-42d9-8042-88ac8b1a32c1" name="CatchErrorHandlerContinue" />
+    </flow>
+    <flow name="get:\errors\default:training-config">
+        <flow-ref doc:name="use default error handler" doc:id="231864b5-8c5a-4444-a434-403d6b4e8499" name="generateError" />
+    </flow>
+    <flow name="get:\errors\propagate:training-config">
+        <flow-ref doc:name="prograte Error" doc:id="5db547f8-8d8c-4b61-881e-764be4aac0e3" name="CatchErrorHandlerPropagete" />
+    </flow>
+    <flow name="get:\errors\validate:training-config">
+        <flow-ref doc:name="ThrowErrorWithValidation" doc:id="d96bc8ff-e7b9-4f77-a7de-04193757ae25" name="ThrowErrorWithValidation" />
+    </flow>
+    <flow name="get:\errors\combined:training-config">
+		<flow-ref doc:name="combinedErrors" doc:id="12bf62a1-8879-466e-96f9-f83e6daec064" name="CombinedErrors"/>
     </flow>
 </mule>

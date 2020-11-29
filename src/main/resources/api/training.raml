@@ -19,11 +19,30 @@ title: Ksquare university training
         
   
 /errors:
+  /default:
+    get:
+  /continue:
+    get: 
+  /propagate:
+    get: 
+  /validate:
+    get: 
+  /combined:
+    get:
 
-  get:
-  post:
   
 /flows:
-
-  get:
-  post:
+  /choice:
+    /{path}:
+      uriParameters:
+        path: 
+          type: string
+          enum: ['c','s','r']
+      get:
+  /scattergather:
+    get:
+  /rouundrobind:
+    get:
+    
+  
+ 
